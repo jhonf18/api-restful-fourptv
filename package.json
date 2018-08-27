@@ -1,0 +1,29 @@
+{
+  "name": "api-fast-buy",
+  "version": "1.0.0",
+  "description": "Plataforma donde puedes vender y comprar productos",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jhon Freddy Perez  <jhonfred1118@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "connect-mongo": "^2.0.1",
+    "cors": "^2.8.4",
+    "crypto": "^1.0.1",
+    "express": "^4.16.2",
+    "express-formidable": "^1.0.0",
+    "express-session": "^1.15.6",
+    "formidable": "^1.1.1",
+    "fs-extra": "^5.0.0",
+    "mongoose": "^5.0.1",
+    "pug": "^2.0.0-rc.4"
+  },
+  "devDependencies": {
+    "nodemon": "1.14.11"
+  }
+}

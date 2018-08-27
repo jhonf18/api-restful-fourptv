@@ -1,0 +1,5 @@
+# Archivos que va ignorar y no se van a montar en github
+node_modules/
+src/config/config
+src/public
+
