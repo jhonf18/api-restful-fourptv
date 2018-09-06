@@ -38,10 +38,9 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+dist/
+src/upload/
 
-##Config db and secrets
-src/config/config
-src/public/
 
 # TypeScript v1 declaration files
 typings/

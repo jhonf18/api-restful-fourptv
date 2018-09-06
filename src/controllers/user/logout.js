@@ -1,13 +1,21 @@
 "use strict";
+const BlackList = require('../../models/black_list');
 
 function logoutUser (req, res) {
 
-  req.session.destroy(function(err){
-    if(err) return res.status(500).send({message: `Ha ocurrido un error al cerrar la sesion ${err}` });
+  const token = req.get('token');
 
-    req.logout()
-    res.status(200).send({message: 'Signout exitoso'})
+  //Token a guardar
+  const saveToken = new BlackList({
+    token
+  });
+
+  saveToken.save(err => {
+    if(err) return res.json({ ok: false, message: 'Ha ocurrido un error ' });
+
+    res.status(200).json({ ok: true, message: 'Se ha cerrado la sesion correctamente' });
   })
+
 }
 
 

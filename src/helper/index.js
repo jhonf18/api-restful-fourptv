@@ -1,12 +1,14 @@
 "use strict";
 
 
-const sendMessage =  (res, code, message, data  ) => {
-
+const sendMessage =  (res, code, ok ,message, data, token  ) => {
+  if(token !== undefined || token !== null) {
+    return res.status(code).json({ ok, message, data, token })
+  }
   if(data !== undefined) {
-    return res.status(code).send({ message: message, data: data })
+    return res.status(code).json({ ok, message, data })
   } else {
-    return res.status(code).send({ message: message });
+    return res.status(code).json({ message })
   }
 };
 
@@ -43,8 +45,13 @@ const findByIdAndUpdate = (User, user, Objedit)=> {
   })
 };
 
+function getFileExtension(filename) {
+  return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+};
+
 module.exports = {
   sendMessage,
   findUserId,
   findByIdAndUpdate,
+  getFileExtension
 }

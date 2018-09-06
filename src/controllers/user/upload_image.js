@@ -1,25 +1,40 @@
 "use strict";
 
 const service = require('../../services/upload_image');
-// const helper = require('../../helper');
+const User = require('../../models/user');
 
 function uploadImage(req, res) {
 
-  let id = req.params.idUser;
+  let id = req.user.id;
+//Verificando usuario
+  User.findOne({ id: id }, (err, user )=> {
 
-  service.uploadImage(req,id)
+    if(err) return res.status(500).json({
+      ok: false,
+      message: 'Ha ocurrido un error inesperado...',
+      data: err
+     });
+
+     if(!user || user === null ) return res.status(401).json({
+      ok: false,
+      message: 'No se ha encontrado ningun usuario con el id ingresado'
+     });
+
+     //Utilizar el servicio de subida de imagen
+    service.uploadImage(req,id)
     .then(user => {
-      res.status(200).send({
+      res.status(200).json({
+        ok: true,
         message: 'La imagen se ha subido correctamente',
-        user: {
+        data: {
           name: user.name,
           email: user.email,
           avatar: user.avatar
         }
-      })
+      });
     })
-    .catch(err => res.status(401).send({ message: `Ha ocurrido un error ${err}` }));
-
+    .catch( err => res.status(401).json({ message: `Ha ocurrido un error`, data: err.message }));
+  })
 }
 
 

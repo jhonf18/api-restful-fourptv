@@ -1,30 +1,47 @@
-'use strict'
+'use strict';
 
-const passport = require('passport');
+// const passport = require('passport');
 const helper = require('../../helper');
+const User = require('../../models/user');
+const auth = require('../../middlerwares/authentication');
 
 function loginUser (req, res, next){
 
-  passport.authenticate('local', (err, userLog)=> {
+  let email = req.body.email,
+    password = req.body.password,
+    userLog;
 
-    if(err) return helper.sendMessage(res, 500, `Ha ocurrido un error inesperado... ${err}`);
+  User.findOne({email})
+    .then( user => {
+      if(user === undefined || user === null){
+        return helper.sendMessage(res, 401, false ,'(Usuario) o contraseña incorrecta');
+      } else {
 
-    if(userLog.code === 401 || !userLog) return helper.sendMessage(res, 404, 'Correo y clave no son válidas.');
+        userLog = user;
+        return user.comparePassword(password)
+          .then(result => {
+            //Obteniendo el token
+            let token = auth.createToken(userLog);
 
-    return req.logIn(userLog, err => {
-      if(err) return helper.sendMessage(res, 500, `Ha ocurrido un error: ${err}`);
+            let createdUser = {
+              id: userLog.id,
+              name: userLog.name,
+              email: userLog.email,
+              avatar: userLog.avatar
+            };
 
-      let user = {
-        id: userLog.id,
-        name: userLog.name,
-        email: userLog.email,
-        avatar: userLog.avatar
+            helper.sendMessage(res, 200, true, 'Login exitoso', createdUser, token);
+
+          })
+          .catch(err => {
+            return helper.sendMessage(res, 404, false, 'Email o (clave) incorrectos', err);
+          });
       }
-
-      helper.sendMessage(res, 200, 'Login exitoso', user);
-
     })
-  })(req, res, next)
+    .catch( err => {
+      helper.sendMessage(res, 500,false ,`Ha ocurrido un error inesperado`, err);
+    });
+
 }
 
 

@@ -5,11 +5,14 @@ const bcrypt = require('bcrypt-nodejs');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema ({
-    email: { type: String, unique: true, lowercase: true },
-    name:  String,
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    name:  { type: String, required: true},
     avatar: String,
-    password: { type: String },
-    id: {type: String, unique: true}
+    google: { type: Boolean, default: false },
+    password: { type: String, required: true },
+    id: {type: String, unique: true},
+    created_at: { type: Date, default: Date.now() },
+    pay: { type: Boolean, default: false}
 });
 
 UserSchema.pre('save', function(next){
@@ -48,6 +51,18 @@ UserSchema.methods.comparePassword = function(password){
 
     return resolve({code: 200, message: 'OK'});
   })
+}
+
+
+UserSchema.methods.toJSON = function(){
+  let user = this;
+  let userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject._id;
+
+  return userObject;
+
 }
 
 module.exports = mongoose.model('User', UserSchema);
